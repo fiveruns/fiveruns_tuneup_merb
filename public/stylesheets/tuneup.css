@@ -1,0 +1,21 @@
+#tuneup { background: #ddd; }
+
+#tuneup ul { list-style: none; margin: 0 0 0 18px; }
+#tuneup table { display: none; }
+
+#tuneup li { cursor: pointer; clear: right; padding: 2px; }
+#tuneup li.disclosed { font-weight: bold; }
+#tuneup li.disclosed ul { font-weight: normal; }
+
+#tuneup ul.children { clear: right; padding-left: 4px; }
+#tuneup ul ul.children { background: #ccc; }
+#tuneup ul ul ul.children { background: #bbb; }
+#tuneup ul ul ul ul.children { background: #aaa; }
+#tuneup ul ul ul ul ul ul.children { background: #666; }
+#tuneup ul ul ul ul ul ul ul.children { background: #555; }
+#tuneup ul ul ul ul ul ul ul ul.children { background: #444; }
+#tuneup ul ul ul ul ul ul ul ul ul.children { background: #333; }
+
+#tuneup .bar { float: right; height: 14px; }
+#tuneup .bar li { padding: 0; float: left; height: 14px; color: #fff; text-align: center; font-weight: bold; padding: 2px; }
+#tuneup .bar li.time { color: #000; font-weight: normal; padding-right: 18px; }
