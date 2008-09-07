@@ -1,9 +1,13 @@
 if defined?(Merb::Plugins)
 
   $:.unshift File.dirname(__FILE__)
-
+  
+  
   load_dependency 'merb-slices'
   Merb::Plugins.add_rakefiles "fiveruns_tuneup_merb/merbtasks", "fiveruns_tuneup_merb/slicetasks", "fiveruns_tuneup_merb/spectasks"
+  
+  require File.dirname(__FILE__) / 'fiveruns_tuneup_core'
+  require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'instrumentation'
 
   # Register the Slice for the current host application
   Merb::Slices::register(__FILE__)
@@ -15,7 +19,7 @@ if defined?(Merb::Plugins)
   # Configuration options:
   # :layout - the layout to use; defaults to :fiveruns_tuneup_merb
   # :mirror - which path component types to use on copy operations; defaults to all
-  Merb::Slices::config[:fiveruns_tuneup_merb][:layout] ||= :fiveruns_tuneup_merb
+  Merb::Slices::config[:fiveruns_tuneup_merb][:layout] ||= :application
   
   # All Slice code is expected to be namespaced inside a module
   module FiverunsTuneupMerb
@@ -28,6 +32,13 @@ if defined?(Merb::Plugins)
     # Stub classes loaded hook - runs before LoadClasses BootLoader
     # right after a slice's classes have been loaded internally.
     def self.loaded
+      Fiveruns::Tuneup.javascripts_path = FiverunsTuneupMerb.public_dir_for('javascripts')
+      Fiveruns::Tuneup.stylesheets_path = FiverunsTuneupMerb.public_dir_for('stylesheets')
+      ::Merb::Request.extend(FiverunsTuneupMerb::Instrumentation::Merb::Request)
+      ::Merb::Controller.extend(FiverunsTuneupMerb::Instrumentation::Merb::Controller)
+      if defined?(::DataMapper)
+        ::DataMapper::Repository.extend(FiverunsTuneupMerb::Instrumentation::DataMapper::Repository)
+      end
     end
     
     # Initialization hook - runs before AfterAppLoads BootLoader
@@ -68,6 +79,7 @@ if defined?(Merb::Plugins)
   # ...
   #
   # Any component path that hasn't been set will default to FiverunsTuneupMerb.root
+  
   #
   # Or just call setup_default_structure! to setup a basic Merb MVC structure.
   FiverunsTuneupMerb.setup_default_structure!

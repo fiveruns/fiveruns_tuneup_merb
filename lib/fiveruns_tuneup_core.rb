@@ -3,6 +3,11 @@ module Fiveruns
   module Tuneup
     
     class CalculationError < ::RuntimeError; end
+    
+    class << self
+      attr_accessor :javascripts_path
+      attr_accessor :stylesheets_path
+    end
 
     def self.record(&block)
       Step.reset!
@@ -23,9 +28,8 @@ module Fiveruns
 
     def self.head
       %(
-        <script src='/javascripts/jquery.js' type='text/javascript'></script>
-        <script src='/javascripts/tuneup.js' type='text/javascript'></script>
-        <link rel='stylesheet' type='text/css' href='/stylesheets/tuneup.css'/>
+        <script src='#{javascripts_path}/init.js' type='text/javascript'></script>
+        <link rel='stylesheet' type='text/css' href='#{stylesheets_path}/tuneup.css'/>
       )
     end
 
@@ -135,7 +139,7 @@ module Fiveruns
         end
         parts = [:model, :view, :controller].map do |l|
           if (portion = layer_portions[l]) > 0
-            "<li class='mvc' title='%f'>%s</li>" % [portion, l.to_s[0, 1].upcase]
+            "<li class='mvc %s' title='%f'>%s</li>" % [l, portion, l.to_s[0, 1].upcase]
           end
         end
         bar = "<ul class='bar' title='#{time * 1000}'><li class='time'>#{'%.1f' % (time * 1000)}ms</li>#{parts.compact.join}</ul>"

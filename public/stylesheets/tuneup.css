@@ -1,21 +1,29 @@
-#tuneup { background: #ddd; }
+#tuneup { background: #000; color: #ddd; }
 
 #tuneup ul { list-style: none; margin: 0 0 0 18px; }
+#tuneup ul > li > ul.children { display: none; }
+#tuneup ul:hover > li > ul.children { display: block; }
+
 #tuneup table { display: none; }
 
 #tuneup li { cursor: pointer; clear: right; padding: 2px; }
-#tuneup li.disclosed { font-weight: bold; }
-#tuneup li.disclosed ul { font-weight: normal; }
+#tuneup li.disclosed { font-weight: bold; color: #fff; }
+#tuneup li.disclosed ul { font-weight: normal; color: #ddd; }
 
 #tuneup ul.children { clear: right; padding-left: 4px; }
-#tuneup ul ul.children { background: #ccc; }
-#tuneup ul ul ul.children { background: #bbb; }
-#tuneup ul ul ul ul.children { background: #aaa; }
-#tuneup ul ul ul ul ul ul.children { background: #666; }
+#tuneup ul ul.children { background: #111; }
+#tuneup ul ul ul.children { background: #222; }
+#tuneup ul ul ul ul.children { background: #333; }
+#tuneup ul ul ul ul ul ul.children { background: #444; }
 #tuneup ul ul ul ul ul ul ul.children { background: #555; }
-#tuneup ul ul ul ul ul ul ul ul.children { background: #444; }
-#tuneup ul ul ul ul ul ul ul ul ul.children { background: #333; }
+#tuneup ul ul ul ul ul ul ul ul.children { background: #666; }
+#tuneup ul ul ul ul ul ul ul ul ul.children { background: #777; }
+
+#tuneup li.mvc { background-image: url(/slices/fiveruns_tuneup_merb/images/fade.png); background-attachment: top left; background-repeat: repeat-x; }
+#tuneup li.model { background-color: #FF9800; }
+#tuneup li.view { background-color: green; }
+#tuneup li.controller { background-color: blue; }
 
 #tuneup .bar { float: right; height: 14px; }
-#tuneup .bar li { padding: 0; float: left; height: 14px; color: #fff; text-align: center; font-weight: bold; padding: 2px; }
-#tuneup .bar li.time { color: #000; font-weight: normal; padding-right: 18px; }
+#tuneup .bar li { padding: 0; float: left; color: #ddd; text-align: center; font-weight: bold; padding: 2px; height: 14px; line-height: 14px; vertical-align: middle; }
+#tuneup .bar li.time { color: #fff; font-weight: normal; padding-right: 18px; }
