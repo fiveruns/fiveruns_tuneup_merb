@@ -32,7 +32,7 @@ module FiverunsTuneupMerb
              if filters.empty?
                super
              else
-               Fiveruns::Tuneup.step("Called filters (#{CGI.escapeHTML filters.inspect})", :controller) { super }
+               Fiveruns::Tuneup.step("Called filters (#{filters.size})", :controller) { super }
              end
            end
 
@@ -80,19 +80,19 @@ module FiverunsTuneupMerb
          module Ext
 
            def read_many(query)
-             Fiveruns::Tuneup.step("DM Read Many #{CGI.escapeHTML query.inspect}<br/>#{caller[0,4].inspect}", :model, :repository => @name, :query => query.inspect) { super }
+             Fiveruns::Tuneup.step("DM Read Many", :model, :repository => @name, :query => query) { super }
            end
 
            def read_one(query)
-             Fiveruns::Tuneup.step("DM Read One ", :model, :repository => @name, :query => query.inspect) { super }
+             Fiveruns::Tuneup.step("DM Read One ", :model, :repository => @name, :query => query) { super }
            end
 
            def update(attributes, query)
-             Fiveruns::Tuneup.step("DM Update", :model, :repository => @name, :query => query.inspect) { super }
+             Fiveruns::Tuneup.step("DM Update", :model, :repository => @name, :query => query) { super }
            end
 
            def delete(query)
-             Fiveruns::Tuneup.step("DM Delete", :model, :repository => @name, :query => query.inspect) { super }
+             Fiveruns::Tuneup.step("DM Delete", :model, :repository => @name, :query => query) { super }
            end
 
          end

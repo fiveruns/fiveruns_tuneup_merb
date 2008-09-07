@@ -1,18 +1,23 @@
 var _window   = window.parent,    // window obj of the main page
     page = $(_window.document); // document obj of the main page
-
+        
 $(window).ready(function() {
+  
   page.find('#tuneup ul ul.children').hide();
   page.find('#tuneup ul > li > ul.children ul.children').slice(0, 2).show().each(function() {
     $(this).parent('li').addClass('disclosed');
   });
-  page.find('#tuneup li').toggle(
-    function() { if($(this).find('ul').length > 1) $(this).addClass('disclosed').find('> ul.children').show(); },
-    function() { if($(this).find('ul').length > 1) $(this).removeClass('disclosed').find('> ul.children').hide(); }                
+  page.find('#tuneup li > span').toggle(
+    function() { var parent = $(this).parent('li'); if(parent.hasClass('parent)')) parent.addClass('disclosed').find('> ul.children').show(); },
+    function() { var parent = $(this).parent('li'); if(parent.hasClass('parent)')) parent.removeClass('disclosed').find('> ul.children').hide(); }                
   );
+
+  // FIXME  
+  page.find('#tuneup li > a').boxy();
+  
   var bars = page.find('#tuneup .bar');
   var total = page.find(bars[0]).attr('title');
-
+  
   page.find('#tuneup ul.bar li.mvc').each(function() {
     var barTime = $(this).parent('.bar').attr('title');
     var maxWidth = barTime / total * 200;
@@ -30,7 +35,7 @@ $(window).ready(function() {
     var width = barTime / total * 200;
     $(this).css({marginRight: (200 - width) + 'px'});
   });
-  TuneUp.adjustFixedElements(page);
+  // TuneUp.adjustFixedElements(page);
 });
 
 var TuneUp = {

@@ -17,7 +17,8 @@ module Fiveruns
     end
 
     def self.step(name, layer, extras = {}, &block)
-      Step.new(name, layer, extras, nil).record(&block)
+      trace = format_caller(caller)
+      Step.new(name, layer, extras.merge(:caller => trace), nil).record(&block)
     end
 
     def self.insert_panel(body, run)
@@ -31,6 +32,17 @@ module Fiveruns
         <script src='#{javascripts_path}/init.js' type='text/javascript'></script>
         <link rel='stylesheet' type='text/css' href='#{stylesheets_path}/tuneup.css'/>
       )
+    end
+    
+    def self.format_caller(trace)
+      valid_lines = trace.reject { |line| line =~ /fiveruns_tuneup/ }[0,5]
+      linked_lines = valid_lines.map { |line| editor_link_line(line) }
+      '<pre>%s</pre>' % linked_lines.join("\n")
+    end
+    
+    def self.editor_link_line(line)
+      filename, number, extra = line.match(/^(.+?):(\d+):in\b(.*?)/)[1, 2]
+      %(<a href='txmt://open/?url=file://%s&line=%d'>%s</a>%s) % [filename, number, line, extra]
     end
 
     def self.panel(run)
@@ -133,17 +145,15 @@ module Fiveruns
         child_tree = if children.any?
           "<ul class='children'>%s</ul>" % children_with_disparity.map { |child| child.to_s }.join
         end
-        extra_info = if !@extras.empty?
-          rows = @extras.map { |key, value| %(<tr><th>#{key}</th><td>#{CGI.escapeHTML value.to_s}</td></tr>)}
-          %(<table>%s</table>) % rows.join
-        end
+        rows = @extras.map { |key, value| %(<tr><th>#{key.to_s.capitalize}</th><td>#{value}</td></tr>)}
+        extra_info = %(<a class='details' href='#step-details-#{object_id}'>Details</a><div id='step-details-#{object_id}'><table>%s</table></div>) % rows.join
         parts = [:model, :view, :controller].map do |l|
           if (portion = layer_portions[l]) > 0
             "<li class='mvc %s' title='%f'>%s</li>" % [l, portion, l.to_s[0, 1].upcase]
           end
         end
         bar = "<ul class='bar' title='#{time * 1000}'><li class='time'>#{'%.1f' % (time * 1000)}ms</li>#{parts.compact.join}</ul>"
-        %(<li>#{bar}<span>#{name}</span>#{extra_info}#{child_tree}</li>)
+        %(<li class='#{:parent if children.any?}'>#{bar}<span>#{name}</span>#{extra_info}#{child_tree}</li>)
       end
 
     end

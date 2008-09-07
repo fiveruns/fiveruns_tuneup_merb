@@ -4,11 +4,14 @@
 #tuneup ul > li > ul.children { display: none; }
 #tuneup ul:hover > li > ul.children { display: block; }
 
-#tuneup table { display: none; }
-
 #tuneup li { cursor: pointer; clear: right; padding: 2px; }
 #tuneup li.disclosed { font-weight: bold; color: #fff; }
 #tuneup li.disclosed ul { font-weight: normal; color: #ddd; }
+#tuneup li > a, #tuneup li > a:visited { margin-left: 18px; color: #000; }
+
+
+#tuneup table * { background: #fff; color: #222; }
+#tuneup th { font-weight: bold; color: #000; background: #e6e6e6; }
 
 #tuneup ul.children { clear: right; padding-left: 4px; }
 #tuneup ul ul.children { background: #111; }
