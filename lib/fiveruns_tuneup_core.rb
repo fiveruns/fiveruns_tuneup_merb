@@ -1,3 +1,5 @@
+require 'erb'
+
 module Fiveruns
   
   module Tuneup
@@ -24,7 +26,8 @@ module Fiveruns
     def self.insert_panel(body, run)
       tag = body[/(<body[^>]*>)/i, 1]
       return body unless tag
-      body.sub(tag, panel(run)).sub(/<\/head>/i, head << '</head>')
+      panel = Panel.new(run)
+      body.sub(/<\/head>/i, head << '</head>').sub(tag, panel.to_html)
     end
 
     def self.head
@@ -44,18 +47,33 @@ module Fiveruns
       filename, number, extra = line.match(/^(.+?):(\d+):in\b(.*?)/)[1, 2]
       %(<a href='txmt://open/?url=file://%s&line=%d'>%s</a>%s) % [filename, number, line, extra]
     end
-
-    def self.panel(run)
-      %(<div id='tuneup'>#{run ? run.to_html : nil}</div>)
+    
+    module Templating
+      
+      def h(text)
+        CGI.escapeHTML(text)
+      end
+      
+      def to_html
+        ERB.new(template).result(binding)
+      end
+      
     end
- 
+      
     class RootStep
-      attr_reader :children
-      attr_accessor :time
+      include Templating
+      attr_reader :children, :bar
+      attr_accessor :time, :parent
       def initialize(time = nil)
         @time = time
         @children = []
+        @bar = Bar.new(self)
       end
+      
+      def root
+        parent ? parent.root : self
+      end
+      
       def record
         start = Time.now
         result = Step.inside(self) { yield }
@@ -76,15 +94,26 @@ module Fiveruns
       def format_time(time)
         '%.1fms' % (time * 1000)
       end
+      def layer_portions
+        children.first.layer_portions
+      end
       def to_json
         {:children => children, :time => time}.to_json
       end
-      def to_html
-        child_tree = if children.any?
-          "<ul>%s</ul>" % children.map { |child| child.to_html }.join
-        end
-        %(<li>#{child_tree}</li>)
+      
+      def proportion
+        time / root.time
       end
+
+      def template
+        %(
+          <div id="tuneup-summary">
+             <%= bar.to_html %>
+             <%= (time * 1000).to_i %> ms 
+          </div>
+        )
+      end
+
     end
 
     class Step < RootStep
@@ -108,7 +137,6 @@ module Fiveruns
       end
 
       attr_reader :name, :layer
-      attr_accessor :parent
       def initialize(name, layer, extras = {}, time = nil)
         super(time)
         @name = name
@@ -119,7 +147,9 @@ module Fiveruns
       def children_with_disparity
         return children if children.empty?
         layer_name = layer if respond_to?(:layer)
-        children + [Step.new('(Other)', layer_name, {}, disparity)]
+        extra_step = Step.new('(Other)', layer_name, {}, disparity)
+        extra_step.parent = parent
+        children + [extra_step]
       end
 
       def layer_portions
@@ -147,22 +177,103 @@ module Fiveruns
       def to_json
         {:children => children_with_disparity, :time => time}.to_json
       end
-
-      def to_html
-        child_tree = if children.any?
-          "<ul class='children'>%s</ul>" % children_with_disparity.map { |child| child.to_html }.join
-        end
-        rows = @extras.map { |key, value| %(<tr><th>#{key.to_s.capitalize}</th><td>#{value}</td></tr>)}
-        extra_info = %(<a class='details' href='#step-details-#{object_id}'>Details</a><div id='step-details-#{object_id}'><table>%s</table></div>) % rows.join
-        parts = [:model, :view, :controller].map do |l|
-          if (portion = layer_portions[l]) > 0
-            "<li class='mvc %s' title='%f'>%s</li>" % [l, portion, l.to_s[0, 1].upcase]
-          end
-        end
-        bar = "<ul class='bar' title='#{time * 1000}'><li class='time'>#{'%.1f' % (time * 1000)}ms</li>#{parts.compact.join}</ul>"
-        %(<li class='#{:parent if children.any?}'>#{bar}<span>#{name}</span>#{child_tree}</li>)
+      
+      def template
+        %(
+          <li class="<%= html_class %>">
+            <ul class="tuneup-step-info">
+              <li class="tuneup-title">
+                <span class="time"><%= '%.1f' % (time * 1000) %> ms</span>
+                <a title="<%=h name %>"><%=h name %></a>
+              </li>
+              <li class="tuneup-detail-bar"><%= bar.to_html %></li>
+              <li style="clear: both;"/>
+           </ul>
+           <%= html_children %>
+          </li>
+        )
+      end
+      
+      private
+      
+      def html_class
+        %W(fiveruns_tuneup_step #{'with_children' if children.any?}).compact.join(' ')
+      end
+      
+      def html_children
+        return unless children.any?
+        %(<ul class='fiveruns_tuneup_children'>%s</ul>) % children_with_disparity.map { |child| child.to_html }.join
       end
 
+    end
+    
+    class Bar
+      include Templating
+      
+      attr_reader :step
+      def initialize(step)
+        @step = step
+      end
+      
+      private
+      
+      def template
+        %(
+          <ul id="<%= 'tuneup-root-bar' if step.is_a?(RootStep) %>" class="tuneup-bar">
+            <% %w(model view controller).each do |layer| %>
+              <%= component layer %>
+            <% end %>
+          </ul>
+        )
+      end
+      
+      def component(layer)
+        width = width_of(layer)
+        %(
+          <li title="#{layer.to_s.capitalize}" style="width: #{width}px;" class="tuneup-layer-#{layer}">#{layer.to_s[0,1].capitalize if width >= 12}</li>
+        )
+      end
+      
+      def width_of(layer)
+        portion = step.layer_portions[layer.to_sym]
+        result = portion * 200 * step.proportion
+        result < 1 && portion != 0 ? 1 : result
+      end
+      
+    end
+    
+    class Panel
+      include Templating
+      
+      attr_reader :root
+      def initialize(root)
+        @root = root
+      end
+      
+      private
+      
+      def template
+        %(
+          <div id="tuneup"><h1>FiveRuns TuneUp</h1><img alt="" src="/images/tuneup/spinner.gif" style="display: none;" id="tuneup_spinner"/><div style="display: block;" id="tuneup-content"><div id="tuneup-panel">
+            <div id="tuneup-data">
+            <div id="tuneup-top">
+              <%= root.to_html %>
+              <a href="#" id="tuneup-save-link">Share this Run</a>
+            </div>
+            <ul id="tuneup-details">
+              <% root.children.each do |child| %>
+                <%= child.to_html %>
+              <% end %>
+              <li style="clear: both;"/>
+              <li style="padding-top: 10px; font-style: italic; float: right; font-size: 0.8em; color: rgb(204, 204, 204);">See our 
+                <a style="font-style: italic;" target="_blank" href="http://www.fiveruns.com/products">production monitoring products</a>.</li>
+            </ul>
+          </div>
+            <p class="tuneup-full"><a href="#" onclick="new TuneUpSandbox.Ajax.Request('/tuneup/off', {asynchronous:true, evalScripts:true}); return false;">Turn Off</a></p>
+          </div></div></div>
+        )
+      end
+      
     end
   
   end
