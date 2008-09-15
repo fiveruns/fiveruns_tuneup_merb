@@ -12,9 +12,6 @@ $(window).ready(function() {
     function() { var parent = $(this).parent('li'); if(parent.hasClass('parent)')) parent.removeClass('disclosed').find('> ul.children').hide(); }                
   );
 
-  // FIXME  
-  page.find('#tuneup li > a').boxy();
-  
   var bars = page.find('#tuneup .bar');
   var total = page.find(bars[0]).attr('title');
   

@@ -46,7 +46,7 @@ module Fiveruns
     end
 
     def self.panel(run)
-      %(<div id='tuneup'>#{run}</div>)
+      %(<div id='tuneup'>#{run ? run.to_html : nil}</div>)
     end
  
     class RootStep
@@ -76,9 +76,12 @@ module Fiveruns
       def format_time(time)
         '%.1fms' % (time * 1000)
       end
-      def to_s
+      def to_json
+        {:children => children, :time => time}.to_json
+      end
+      def to_html
         child_tree = if children.any?
-          "<ul>%s</ul>" % children.map { |child| child.to_s }.join
+          "<ul>%s</ul>" % children.map { |child| child.to_html }.join
         end
         %(<li>#{child_tree}</li>)
       end
@@ -140,10 +143,14 @@ module Fiveruns
           result
         end
       end
+      
+      def to_json
+        {:children => children_with_disparity, :time => time}.to_json
+      end
 
-      def to_s
+      def to_html
         child_tree = if children.any?
-          "<ul class='children'>%s</ul>" % children_with_disparity.map { |child| child.to_s }.join
+          "<ul class='children'>%s</ul>" % children_with_disparity.map { |child| child.to_html }.join
         end
         rows = @extras.map { |key, value| %(<tr><th>#{key.to_s.capitalize}</th><td>#{value}</td></tr>)}
         extra_info = %(<a class='details' href='#step-details-#{object_id}'>Details</a><div id='step-details-#{object_id}'><table>%s</table></div>) % rows.join
@@ -153,7 +160,7 @@ module Fiveruns
           end
         end
         bar = "<ul class='bar' title='#{time * 1000}'><li class='time'>#{'%.1f' % (time * 1000)}ms</li>#{parts.compact.join}</ul>"
-        %(<li class='#{:parent if children.any?}'>#{bar}<span>#{name}</span>#{extra_info}#{child_tree}</li>)
+        %(<li class='#{:parent if children.any?}'>#{bar}<span>#{name}</span>#{child_tree}</li>)
       end
 
     end
