@@ -2,37 +2,32 @@ var _window   = window.parent,    // window obj of the main page
     page = $(_window.document); // document obj of the main page
         
 $(window).ready(function() {
-  
-  page.find('#tuneup ul ul.children').hide();
-  page.find('#tuneup ul > li > ul.children ul.children').slice(0, 2).show().each(function() {
-    $(this).parent('li').addClass('disclosed');
-  });
-  page.find('#tuneup li > span').toggle(
-    function() { var parent = $(this).parent('li'); if(parent.hasClass('parent)')) parent.addClass('disclosed').find('> ul.children').show(); },
-    function() { var parent = $(this).parent('li'); if(parent.hasClass('parent)')) parent.removeClass('disclosed').find('> ul.children').hide(); }                
+    
+  var links = page.find('#tuneup .fiveruns_tuneup_step.with_children .tuneup-title a');
+  links.toggle(
+    // Note: Simple 'parent' lookup with selector doesn't seem to work
+    function() {
+      $(this).parent().parent().parent().addClass('tuneup-opened');
+    },
+    function() {
+      $(this).parent().parent().parent().removeClass('tuneup-opened');
+    }                
   );
-
-  var bars = page.find('#tuneup .bar');
-  var total = page.find(bars[0]).attr('title');
-  
-  page.find('#tuneup ul.bar li.mvc').each(function() {
-    var barTime = $(this).parent('.bar').attr('title');
-    var maxWidth = barTime / total * 200;
-    var portion = $(this).attr('title');
-    var width = maxWidth * portion;
-    $(this).attr('title', (barTime * portion).toFixed(1) + 'ms / ' + (barTime / total * portion * 100).toFixed(2) + '%');
-    $(this).css({
-      width:      width + 'px'
-    });
-    if (width < 12)
-      $(this).html('&nbsp;');
-  });
-  $(bars).each(function() {
-    var barTime = $(this).attr('title');
-    var width = barTime / total * 200;
-    $(this).css({marginRight: (200 - width) + 'px'});
-  });
-  // TuneUp.adjustFixedElements(page);
+  page.find('#fiveruns_tuneup_state').toggle(
+    function () {
+      var link = $(this);
+      $.getScript('/fiveruns_tuneup_merb/off.js', function() {
+        link.html('Turn On');
+      });
+    },
+    function () { 
+      var link = $(this);
+      $.getScript('/fiveruns_tuneup_merb/on.js', function() {
+        link.html('Turn Off');
+      });
+    }
+  );
+  TuneUp.adjustFixedElements(page);
 });
 
 var TuneUp = {

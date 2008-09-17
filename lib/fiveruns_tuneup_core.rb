@@ -24,10 +24,11 @@ module Fiveruns
     end
 
     def self.insert_panel(body, run)
+      return body unless run
       tag = body[/(<body[^>]*>)/i, 1]
       return body unless tag
       panel = Panel.new(run)
-      body.sub(/<\/head>/i, head << '</head>').sub(tag, panel.to_html)
+      body.sub(/<\/head>/i, head << '</head>').sub(tag, tag + panel.to_html)
     end
 
     def self.head
@@ -108,8 +109,8 @@ module Fiveruns
       def template
         %(
           <div id="tuneup-summary">
-             <%= bar.to_html %>
-             <%= (time * 1000).to_i %> ms 
+            <%= bar.to_html %>
+            <%= (time * 1000).to_i %> ms
           </div>
         )
       end
@@ -197,7 +198,7 @@ module Fiveruns
       private
       
       def html_class
-        %W(fiveruns_tuneup_step #{'with_children' if children.any?}).compact.join(' ')
+        %W(fiveruns_tuneup_step #{'with_children' if children.any?} #{'tuneup-opened' if root.children.first.object_id == self.object_id}).compact.join(' ')
       end
       
       def html_children
@@ -258,7 +259,7 @@ module Fiveruns
             <div id="tuneup-data">
             <div id="tuneup-top">
               <%= root.to_html %>
-              <a href="#" id="tuneup-save-link">Share this Run</a>
+              <!-- <a href="#" id="tuneup-save-link">Share this Run</a> -->
             </div>
             <ul id="tuneup-details">
               <% root.children.each do |child| %>
@@ -269,7 +270,6 @@ module Fiveruns
                 <a style="font-style: italic;" target="_blank" href="http://www.fiveruns.com/products">production monitoring products</a>.</li>
             </ul>
           </div>
-            <p class="tuneup-full"><a href="#" onclick="new TuneUpSandbox.Ajax.Request('/tuneup/off', {asynchronous:true, evalScripts:true}); return false;">Turn Off</a></p>
           </div></div></div>
         )
       end

@@ -19,7 +19,7 @@ if defined?(Merb::Plugins)
   # Configuration options:
   # :layout - the layout to use; defaults to :fiveruns_tuneup_merb
   # :mirror - which path component types to use on copy operations; defaults to all
-  Merb::Slices.config[:fiveruns_tuneup_merb][:layout] ||= :application
+  Merb::Slices.config[:fiveruns_tuneup_merb][:layout] ||= nil
   
   # All Slice code is expected to be namespaced inside a module
   module FiverunsTuneupMerb
@@ -69,7 +69,7 @@ if defined?(Merb::Plugins)
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
       # example of a named route
-      scope.match('/index.:format').to(:controller => 'main', :action => 'index').name(:fiveruns_tuneup_merb_index)
+      # scope.match('/on.js').to(:controller => 'state', :action => 'on').name(:fiveruns_tuneup_merb_on)
     end
     
   end
