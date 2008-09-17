@@ -46,7 +46,13 @@ module Fiveruns
     
     def self.editor_link_line(line)
       filename, number, extra = line.match(/^(.+?):(\d+):in\b(.*?)/)[1, 2]
-      %(<a href='txmt://open/?url=file://%s&line=%d'>%s</a>%s) % [filename, number, line, extra]
+      name = if line.size > 87
+        "&hellip;#{CGI.escapeHTML line.sub(/^.*?(.{40})$/, '\1')}"
+      else
+        line
+      end
+      name.sub!(/([^\/\\]+\.rb:.*)$/, '<span>\1</span>')
+      %(<a title='%s' href='txmt://open/?url=file://%s&line=%d'>%s</a>%s) % [CGI.escapeHTML(line), filename, number, name, extra]
     end
     
     module Templating
@@ -137,7 +143,7 @@ module Fiveruns
         result
       end
 
-      attr_reader :name, :layer
+      attr_reader :name, :layer, :extras
       def initialize(name, layer, extras = {}, time = nil)
         super(time)
         @name = name
@@ -185,11 +191,20 @@ module Fiveruns
             <ul class="tuneup-step-info">
               <li class="tuneup-title">
                 <span class="time"><%= '%.1f' % (time * 1000) %> ms</span>
-                <a title="<%=h name %>"><%=h name %></a>
+                <a class='tuneup-step-name' title="<%=h name %>"><%=h name %></a>
+                <a class='tuneup-step-extras-link'>(?)</a>
               </li>
               <li class="tuneup-detail-bar"><%= bar.to_html %></li>
               <li style="clear: both;"/>
            </ul>
+           <div class='tuneup-step-extras'>
+             <dl>
+               <% extras.each do |key, value| %>
+                 <dt><%=h key.to_s.capitalize %></dt>
+                 <dd><%= value.to_s %></dd>
+               <% end %>
+             </dl>
+           </div>
            <%= html_children %>
           </li>
         )
@@ -259,6 +274,7 @@ module Fiveruns
             <div id="tuneup-data">
             <div id="tuneup-top">
               <%= root.to_html %>
+              <%# In later version... %>
               <!-- <a href="#" id="tuneup-save-link">Share this Run</a> -->
             </div>
             <ul id="tuneup-details">
@@ -266,8 +282,10 @@ module Fiveruns
                 <%= child.to_html %>
               <% end %>
               <li style="clear: both;"/>
-              <li style="padding-top: 10px; font-style: italic; float: right; font-size: 0.8em; color: rgb(204, 204, 204);">See our 
-                <a style="font-style: italic;" target="_blank" href="http://www.fiveruns.com/products">production monitoring products</a>.</li>
+              <li style="padding-top: 10px; font-style: italic; float: right; font-size: 0.8em; color: rgb(204, 204, 204);">
+                See our 
+                <a style="font-style: italic;" target="_blank" href="http://www.fiveruns.com/products">production monitoring products</a>.
+              </li>
             </ul>
           </div>
           </div></div></div>

@@ -1,3 +1,5 @@
+require 'pp'
+
 module FiverunsTuneupMerb
     
   module Instrumentation
@@ -70,6 +72,10 @@ module FiverunsTuneupMerb
      end
 
      module DataMapper
+       
+       def self.format_query(query)
+         "<p>%s</p>" % CGI.escapeHTML(query.inspect)
+        end
 
        module Repository
 
@@ -80,19 +86,31 @@ module FiverunsTuneupMerb
          module Ext
 
            def read_many(query)
-             Fiveruns::Tuneup.step("DM Read Many", :model, :repository => @name, :query => query) { super }
+             Fiveruns::Tuneup.step("DM Read Many", :model,
+               :repository => @name,
+               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+             ) { super }
            end
 
            def read_one(query)
-             Fiveruns::Tuneup.step("DM Read One ", :model, :repository => @name, :query => query) { super }
+             Fiveruns::Tuneup.step("DM Read One ", :model,
+               :repository => @name,
+               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+             ) { super }
            end
 
            def update(attributes, query)
-             Fiveruns::Tuneup.step("DM Update", :model, :repository => @name, :query => query) { super }
+             Fiveruns::Tuneup.step("DM Update", :model,
+               :repository => @name,
+               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+             ) { super }
            end
 
            def delete(query)
-             Fiveruns::Tuneup.step("DM Delete", :model, :repository => @name, :query => query) { super }
+             Fiveruns::Tuneup.step("DM Delete", :model,
+               :repository => @name,
+               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+             ) { super }
            end
 
          end

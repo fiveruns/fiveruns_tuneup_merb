@@ -103,10 +103,13 @@ version: 2.5.1
 #tuneup .tuneup-bar li { text-align: center; }
 
 #tuneup #tuneup-details li.fiveruns_tuneup_step { clear: left; padding: 0 0 0 4px; background: url(/slices/fiveruns_tuneup_merb/images/pip.gif) 4px 0 no-repeat; margin: 2px 0; }
-#tuneup #tuneup-details li.fiveruns_tuneup_step.with_children {  background: url(/slices/fiveruns_tuneup_merb/images/arrows.gif) 4px 0 no-repeat;}
+#tuneup #tuneup-details li.fiveruns_tuneup_step.with_children { background: url(/slices/fiveruns_tuneup_merb/images/arrows.gif) 4px 0 no-repeat;}
 #tuneup #tuneup-details ul.fiveruns_tuneup_children { display: none; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step.with_children.tuneup-opened { background: url(/slices/fiveruns_tuneup_merb/images/arrows.gif) 4px -20px no-repeat; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step.with_children.tuneup-opened > ul.fiveruns_tuneup_children { display: block; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras { display: none; padding-top: 16px; background: url(/slices/fiveruns_tuneup_merb/images/dialog.png) 5% 0 no-repeat; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a { font-size: 11px; color: #333; text-decoration: none; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a span { color: #000; text-decoration: underline; }
 
 #tuneup ul#tuneup-details span.time { margin-right: 12px; }
 
@@ -115,12 +118,22 @@ version: 2.5.1
 #tuneup_spinner { position: absolute; z-index: 11002; top: 15px; right: 30px; }
 
 #tuneup ul#tuneup-details li.tuneup-detail-bar {
-	float:left;
+	float: left;
   margin: 0 0 0 0;
   height: 20px;
 	width: 300px;
   padding: 0;
 }
+#tuneup dl, #tuneup dt, #tuneup dd {
+  color: #fab444;
+  position: relative;
+  background: none;
+  width: 600px;
+}
+#tuneup dd { color: #000; }
+#tuneup dl { background: #ffc url(/slices/fiveruns_tuneup_merb/images/fade.png) bottom left repeat-x; padding: 6px; padding-bottom: 16px; -moz-border-radius: 6px; -webkit-border-radius: 6px; margin-left: 18px; }
+#tuneup dd { margin-left: 18px; }
+
 #tuneup ul#tuneup-details li.tuneup-title { padding-left: 16px; width: 400px; }
 
 #tuneup ul#tuneup-details ul.fiveruns_tuneup_children { background: #111; }
@@ -199,42 +212,3 @@ version: 2.5.1
 #tuneup button { background: none; border: 0; margin: 0; padding: 0; height: 50px; line-height: 50px; vertical-align: middle; }
 
 a.tuneup-step-link { padding-left: 20px; margin-left: -20px; outline: none;}
-
-/*
-
-
-
-#tuneup { background: #000; color: #ddd; }
-
-#tuneup ul { list-style: none; margin: 0 0 0 18px; }
-#tuneup ul > li > ul.children { display: none; }
-#tuneup ul:hover > li > ul.children { display: block; }
-
-#tuneup li { cursor: pointer; clear: right; padding: 2px; }
-#tuneup li.disclosed { font-weight: bold; color: #fff; }
-#tuneup li.disclosed ul { font-weight: normal; color: #ddd; }
-#tuneup li > a, #tuneup li > a:visited { margin-left: 18px; color: #000; }
-
-
-#tuneup table * { background: #fff; color: #222; }
-#tuneup th { font-weight: bold; color: #000; background: #e6e6e6; }
-
-#tuneup ul.children { clear: right; padding-left: 4px; }
-#tuneup ul ul.children { background: #111; }
-#tuneup ul ul ul.children { background: #222; }
-#tuneup ul ul ul ul.children { background: #333; }
-#tuneup ul ul ul ul ul ul.children { background: #444; }
-#tuneup ul ul ul ul ul ul ul.children { background: #555; }
-#tuneup ul ul ul ul ul ul ul ul.children { background: #666; }
-#tuneup ul ul ul ul ul ul ul ul ul.children { background: #777; }
-
-#tuneup li.mvc { background-image: url(/slices/fiveruns_tuneup_merb/images/fade.png); background-attachment: top left; background-repeat: repeat-x; }
-#tuneup li.model { background-color: #FF9800; }
-#tuneup li.view { background-color: green; }
-#tuneup li.controller { background-color: blue; }
-
-#tuneup .bar { float: right; height: 14px; }
-#tuneup .bar li { padding: 0; float: left; color: #ddd; text-align: center; font-weight: bold; padding: 2px; height: 14px; line-height: 14px; vertical-align: middle; }
-#tuneup .bar li.time { color: #fff; font-weight: normal; padding-right: 18px; }
-
-*/
