@@ -133,7 +133,7 @@ module FiverunsTuneupMerb
              Fiveruns::Tuneup.step("DM Read Many", :model,
                'Query' => [
                  FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:read_statement, query)),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
+                 {'Raw Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                ]
              ) { super }
            end
@@ -142,7 +142,7 @@ module FiverunsTuneupMerb
              Fiveruns::Tuneup.step("DM Read One ", :model,
                'Query' => [
                  FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:read_statement, query)),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
+                 {'Raw Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                 ]
              ) { super }
            end
@@ -151,7 +151,7 @@ module FiverunsTuneupMerb
              Fiveruns::Tuneup.step("DM Update", :model,
                'Query' => [
                  FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:update_statement, query), attributes),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
+                 {'Raw Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                 ]
              ) { super }
            end
@@ -160,7 +160,7 @@ module FiverunsTuneupMerb
              Fiveruns::Tuneup.step("DM Delete", :model,
                'Query' => [
                  FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:delete_statement, query)),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
+                 {'Raw Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                ]
              ) { super }
            end
