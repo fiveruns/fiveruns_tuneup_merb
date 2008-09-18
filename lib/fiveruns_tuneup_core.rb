@@ -55,6 +55,7 @@ module Fiveruns
       end
     end
     
+    # TODO: Refactor
     def self.editor_link_line(line)
       filename, number, extra = line.match(/^(.+?):(\d+)(?::in\b(.*?))?/)[1, 2]
       in_app, line = strip_root(line)
