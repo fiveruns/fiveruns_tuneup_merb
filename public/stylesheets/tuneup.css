@@ -57,7 +57,7 @@ version: 2.5.1
 
 
 #tuneup .tuneup-bar { margin: 0 4px; margin-left: 10px; height: 15px; list-style: none; }
-#tuneup .tuneup-bar li { float:left; height: 20px; color: #fff; line-height: 20px; vertical-align: middle; font-size: 11px; padding: 0 4px;
+#tuneup .tuneup-bar li { float:left; height: 20px; color: #fff; line-height: 20px; vertical-align: middle; font-size: 12px; padding: 0 4px;
   background-image: url(/slices/fiveruns_tuneup_merb/images/fade.png);
   background-position: bottom left;
   background-repeat: repeat-x;
@@ -109,7 +109,7 @@ version: 2.5.1
 #tuneup #tuneup-details li.fiveruns_tuneup_step.with_children.tuneup-opened > ul.fiveruns_tuneup_children { display: block; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras { display: none; padding-top: 16px; background: url(/slices/fiveruns_tuneup_merb/images/dialog.png) 5% 0 no-repeat; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a { font-size: 11px; color: #333; }
-#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a span { color: #000; font-weight: bold; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a b { color: #000; font-weight: bold; }
 
 #tuneup ul#tuneup-details span.time { margin-right: 12px; }
 
@@ -132,11 +132,16 @@ version: 2.5.1
   width: 600px;
 }
 #tuneup dd { color: #000; font-family:monospace; *font-size:108%; line-height:100%; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras .tuneup-app-line { text-decoration: underline; background: #ffa; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a.tuneup-close-link { float: right; font-family: sans-serif; color: red; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a.tuneup-more-link { font-family: sans-serif; color: red; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras dd b { font-family: sans-serif; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras-link { margin-left: 9px; display: none; }
 #tuneup #tuneup-details  li.fiveruns_tuneup_step li.tuneup-title:hover .tuneup-step-extras-link { display: inline; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras ul {
+  padding-left: 9px;
+  font-size: 12px;
+}
 
 #tuneup .tuneup-step-extras > div { background: #ffc url(/slices/fiveruns_tuneup_merb/images/fade.png) bottom left repeat-x; padding: 6px; padding-bottom: 16px; -moz-border-radius: 6px; -webkit-border-radius: 6px; margin-left: 18px; }
 #tuneup dd { margin-left: 18px; }

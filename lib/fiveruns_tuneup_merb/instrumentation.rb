@@ -3,6 +3,52 @@ require 'pp'
 module FiverunsTuneupMerb
     
   module Instrumentation
+    
+     def self.pretty(value)
+       CGI.escapeHTML(PP.pp(value, ''))
+     end
+     
+     def self.format_filters(filters)
+       sets = filters.map do |filter, opts|
+         content = if filter.is_a?(Proc)
+           where = filter.inspect[/@(.+)>$/, 1]
+           "Proc at %s with options %s" % [Fiveruns::Tuneup.editor_link_line(where), pretty(opts)]
+         else
+           "%s with options %s" % [pretty(filter), pretty(opts)]
+          end
+         %(<li>%s</li>) % content
+       end
+       "<ul>%s</ul>" % sets.join("\n")
+     end
+     
+     def self.format_sql(query, statement, attributes = nil)
+       values = query.bind_values + (attributes ? attributes.values : [])
+       [statement, "<b>Values:</b> " + CGI.escapeHTML(values.inspect)].join("<br/>")
+     end
+     
+     def self.attrs_for(query)
+       [
+         [ :repository, query.repository.name ],
+         [ :model,      query.model           ],
+         [ :fields,     query.fields          ],
+         [ :links,      query.links           ],
+         [ :conditions, query.conditions      ],
+         [ :order,      query.order           ],
+         [ :limit,      query.limit           ],
+         [ :offset,     query.offset          ],
+         [ :reload,     query.reload?         ],
+         [ :unique,     query.unique?         ]
+       ]
+     end
+     
+     def self.format_query(query)
+       rows = attrs_for(query).map do |set|
+         %(<tr><th>%s</th><td><pre>%s</pre></td></tr>) % set.map { |item|
+           pretty item
+         }
+       end
+       "<table>%s</table>" % rows.join
+     end
 
      module Merb
 
@@ -34,7 +80,9 @@ module FiverunsTuneupMerb
              if filters.empty?
                super
              else
-               Fiveruns::Tuneup.step("Called filters (#{filters.size})", :controller) { super }
+               Fiveruns::Tuneup.step("Filters (#{filters.size})", :controller, 
+                 "Filters Called" => FiverunsTuneupMerb::Instrumentation.format_filters(filters)
+               ) { super }
              end
            end
 
@@ -72,37 +120,6 @@ module FiverunsTuneupMerb
      end
 
      module DataMapper
-         
-       def self.pretty(value)
-         CGI.escapeHTML(PP.pp(value, ''))
-       end
-       
-       def self.attrs_for(query)
-         [
-           [ :repository, query.repository.name ],
-           [ :model,      query.model           ],
-           [ :fields,     query.fields          ],
-           [ :links,      query.links           ],
-           [ :conditions, query.conditions      ],
-           [ :order,      query.order           ],
-           [ :limit,      query.limit           ],
-           [ :offset,     query.offset          ],
-           [ :reload,     query.reload?         ],
-           [ :unique,     query.unique?         ]
-         ]
-       end
-       
-       def self.format_sql(query, statement, attributes = nil)
-         values = query.bind_values + (attributes ? attributes.values : [])
-         [statement, "<b>Values:</b> " + CGI.escapeHTML(values.inspect)].join("<br/>")
-       end
-       
-       def self.format_query(query)
-         rows = attrs_for(query).map do |set|
-           %(<tr><th>%s</th><td><pre>%s</pre></td></tr>) % set.map { |item| pretty item }
-         end
-         "<table>%s</table>" % rows.join
-       end
 
        module Repository
 
@@ -115,8 +132,8 @@ module FiverunsTuneupMerb
            def read_many(query)
              Fiveruns::Tuneup.step("DM Read Many", :model,
                'Query' => [
-                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:read_statement, query)),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+                 FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:read_statement, query)),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                ]
              ) { super }
            end
@@ -124,8 +141,8 @@ module FiverunsTuneupMerb
            def read_one(query)
              Fiveruns::Tuneup.step("DM Read One ", :model,
                'Query' => [
-                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:read_statement, query)),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+                 FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:read_statement, query)),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                 ]
              ) { super }
            end
@@ -133,8 +150,8 @@ module FiverunsTuneupMerb
            def update(attributes, query)
              Fiveruns::Tuneup.step("DM Update", :model,
                'Query' => [
-                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:update_statement, query), attributes),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+                 FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:update_statement, query), attributes),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                 ]
              ) { super }
            end
@@ -142,8 +159,8 @@ module FiverunsTuneupMerb
            def delete(query)
              Fiveruns::Tuneup.step("DM Delete", :model,
                'Query' => [
-                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:delete_statement, query)),
-                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+                 FiverunsTuneupMerb::Instrumentation.format_sql(query, adapter.send(:delete_statement, query)),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation.format_query(query)}
                ]
              ) { super }
            end
