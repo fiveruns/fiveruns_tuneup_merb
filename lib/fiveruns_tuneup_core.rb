@@ -20,7 +20,7 @@ module Fiveruns
 
     def self.step(name, layer, extras = {}, &block)
       trace = format_caller(caller)
-      Step.new(name, layer, extras.merge(:caller => trace), nil).record(&block)
+      Step.new(name, layer, extras.merge('Caller' => trace), nil).record(&block)
     end
 
     def self.insert_panel(body, run)
@@ -144,11 +144,11 @@ module Fiveruns
       end
 
       attr_reader :name, :layer, :extras
-      def initialize(name, layer, extras = {}, time = nil)
+      def initialize(name, layer, raw_extras = {}, time = nil)
         super(time)
         @name = name
         @layer = layer
-        @extras = extras
+        @extras = build_extras(raw_extras)
       end
 
       def children_with_disparity
@@ -185,6 +185,15 @@ module Fiveruns
         {:children => children_with_disparity, :time => time}.to_json
       end
       
+      private
+      
+      def build_extras(raw_extras)
+        raw_extras.sort_by { |k, v| k.to_s }.map do |name, data|
+          data = data.is_a?(Array) ? data : [data]
+          Extra.new(name, *data )
+        end
+      end
+      
       def template
         %(
           <li class="<%= html_class %>">
@@ -198,12 +207,13 @@ module Fiveruns
               <li style="clear: both;"/>
            </ul>
            <div class='tuneup-step-extras'>
-             <dl>
-               <% extras.each do |key, value| %>
-                 <dt><%=h key.to_s.capitalize %></dt>
-                 <dd><%= value.to_s %></dd>
-               <% end %>
-             </dl>
+             <div>
+               <dl>
+                 <% extras.each do |extra| %>
+                   <%= extra.to_html %>
+                 <% end %>
+               </dl>
+             </div>
            </div>
            <%= html_children %>
           </li>
@@ -219,6 +229,34 @@ module Fiveruns
       def html_children
         return unless children.any?
         %(<ul class='fiveruns_tuneup_children'>%s</ul>) % children_with_disparity.map { |child| child.to_html }.join
+      end
+      
+      class Extra
+        include Templating
+        
+        attr_reader :name, :content, :extended
+        def initialize(name, content, extended = {})
+          @name = name
+          @content = content
+          @extended = extended
+        end
+        
+        private
+        
+        def template
+          %(
+            <dt><%= h name %></dt>
+            <dd>
+              <%= content %>
+              <% if extended.any? %>
+                <% extended.each do |name, value| %>
+                  <div class='tuneup-step-extra-extended' title='<%= h name %>'><%= value %></div>
+                <% end %>
+              <% end %>
+            </dd>            
+          )
+        end
+        
       end
 
     end

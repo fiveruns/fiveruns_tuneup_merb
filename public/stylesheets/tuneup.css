@@ -108,8 +108,8 @@ version: 2.5.1
 #tuneup #tuneup-details li.fiveruns_tuneup_step.with_children.tuneup-opened { background: url(/slices/fiveruns_tuneup_merb/images/arrows.gif) 4px -20px no-repeat; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step.with_children.tuneup-opened > ul.fiveruns_tuneup_children { display: block; }
 #tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras { display: none; padding-top: 16px; background: url(/slices/fiveruns_tuneup_merb/images/dialog.png) 5% 0 no-repeat; }
-#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a { font-size: 11px; color: #333; text-decoration: none; }
-#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a span { color: #000; text-decoration: underline; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a { font-size: 11px; color: #333; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a span { color: #000; font-weight: bold; }
 
 #tuneup ul#tuneup-details span.time { margin-right: 12px; }
 
@@ -125,13 +125,20 @@ version: 2.5.1
   padding: 0;
 }
 #tuneup dl, #tuneup dt, #tuneup dd {
-  color: #fab444;
+  color: #000;
   position: relative;
+  font-size: 13px;
   background: none;
   width: 600px;
 }
-#tuneup dd { color: #000; }
-#tuneup dl { background: #ffc url(/slices/fiveruns_tuneup_merb/images/fade.png) bottom left repeat-x; padding: 6px; padding-bottom: 16px; -moz-border-radius: 6px; -webkit-border-radius: 6px; margin-left: 18px; }
+#tuneup dd { color: #000; font-family:monospace; *font-size:108%; line-height:100%; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a.tuneup-close-link { float: right; font-family: sans-serif; color: red; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras a.tuneup-more-link { font-family: sans-serif; color: red; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras dd b { font-family: sans-serif; }
+#tuneup #tuneup-details li.fiveruns_tuneup_step .tuneup-step-extras-link { margin-left: 9px; display: none; }
+#tuneup #tuneup-details  li.fiveruns_tuneup_step li.tuneup-title:hover .tuneup-step-extras-link { display: inline; }
+
+#tuneup .tuneup-step-extras > div { background: #ffc url(/slices/fiveruns_tuneup_merb/images/fade.png) bottom left repeat-x; padding: 6px; padding-bottom: 16px; -moz-border-radius: 6px; -webkit-border-radius: 6px; margin-left: 18px; }
 #tuneup dd { margin-left: 18px; }
 
 #tuneup ul#tuneup-details li.tuneup-title { padding-left: 16px; width: 400px; }
@@ -178,9 +185,9 @@ version: 2.5.1
 #tuneup .tuneup-step-info:hover .tuneup-halo { display: inline; }
 
 #tuneup textarea { background: none; overflow: auto; color: #fff; font-size: 12px; font-family: sans-serif; padding: 4px; border: 0; font-family: monospace; }
-#tuneup table { border: 0; margin-top: 4px; background: #111; } /* sql */
-#tuneup th { background: #000; padding: 4px; color: #fff; font-size: 12px; text-align: left; border: 0; font-weight: bold; border: 1px #333 solid; border-left: 0; border-top: 0; }
-#tuneup td { background: #111; padding: 4px; color: #ddd; font-size: 12px; text-align: left; border: 0; }
+#tuneup table { border: 0; margin-top: 4px; background: none; } /* sql */
+#tuneup th { background: #ffa; padding: 2px; color: #000; font-size: 12px; text-align: left; border: 0; font-weight: bold; border: 0; text-align: right; }
+#tuneup td { background: none; padding: 2px; color: #222; font-size: 12px; text-align: left; border: 0; }
 
 #tuneup #tuneup-schema { display: none; position: absolute; top: 46px; right: 754px; padding: 9px; text-align: left; z-index: 10998; background: #000; opacity: 0.85; color: #ddd; overflow: hidden; -moz-border-radius: 6px; }
 

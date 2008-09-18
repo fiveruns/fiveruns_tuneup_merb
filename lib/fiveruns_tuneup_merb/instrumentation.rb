@@ -72,10 +72,37 @@ module FiverunsTuneupMerb
      end
 
      module DataMapper
+         
+       def self.pretty(value)
+         CGI.escapeHTML(PP.pp(value, ''))
+       end
+       
+       def self.attrs_for(query)
+         [
+           [ :repository, query.repository.name ],
+           [ :model,      query.model           ],
+           [ :fields,     query.fields          ],
+           [ :links,      query.links           ],
+           [ :conditions, query.conditions      ],
+           [ :order,      query.order           ],
+           [ :limit,      query.limit           ],
+           [ :offset,     query.offset          ],
+           [ :reload,     query.reload?         ],
+           [ :unique,     query.unique?         ]
+         ]
+       end
+       
+       def self.format_sql(query, statement, attributes = nil)
+         values = query.bind_values + (attributes ? attributes.values : [])
+         [statement, "<b>Values:</b> " + CGI.escapeHTML(values.inspect)].join("<br/>")
+       end
        
        def self.format_query(query)
-         "<p>%s</p>" % CGI.escapeHTML(query.inspect)
-        end
+         rows = attrs_for(query).map do |set|
+           %(<tr><th>%s</th><td><pre>%s</pre></td></tr>) % set.map { |item| pretty item }
+         end
+         "<table>%s</table>" % rows.join
+       end
 
        module Repository
 
@@ -87,29 +114,37 @@ module FiverunsTuneupMerb
 
            def read_many(query)
              Fiveruns::Tuneup.step("DM Read Many", :model,
-               :repository => @name,
-               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+               'Query' => [
+                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:read_statement, query)),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+               ]
              ) { super }
            end
 
            def read_one(query)
              Fiveruns::Tuneup.step("DM Read One ", :model,
-               :repository => @name,
-               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+               'Query' => [
+                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:read_statement, query)),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+                ]
              ) { super }
            end
 
            def update(attributes, query)
              Fiveruns::Tuneup.step("DM Update", :model,
-               :repository => @name,
-               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+               'Query' => [
+                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:update_statement, query), attributes),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+                ]
              ) { super }
            end
 
            def delete(query)
              Fiveruns::Tuneup.step("DM Delete", :model,
-               :repository => @name,
-               :query => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)
+               'Query' => [
+                 FiverunsTuneupMerb::Instrumentation::DataMapper.format_sql(query, adapter.send(:delete_statement, query)),
+                 {'Details' => FiverunsTuneupMerb::Instrumentation::DataMapper.format_query(query)}
+               ]
              ) { super }
            end
 
