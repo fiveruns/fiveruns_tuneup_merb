@@ -308,9 +308,9 @@ module Fiveruns
       def layer_description
         case layer
         when :model
-          "In the <i>model</i> layer, this is probably ORM overhead, out of your control."
+          "In the <i>model</i> layer, this is probably ORM overhead (out of your control)."
         when :view
-          "In the <i>view</i> layer, this is probably framework overhead during render, out of your control."
+          "In the <i>view</i> layer, this is probably framework overhead during render (out of your control)."
         when :controller
           %(
             In the <i>controller</i> layer, this is probably framework overhead during action execution (out of your control),
