@@ -175,7 +175,7 @@ module Fiveruns
       def children_with_disparity
         return children if children.empty?
         layer_name = layer if respond_to?(:layer)
-        extra_step = Step.new('(Other)', layer_name, {}, disparity)
+        extra_step = DisparityStep.new(layer_name, disparity)
         extra_step.parent = parent
         children + [extra_step]
       end
@@ -280,6 +280,45 @@ module Fiveruns
         
       end
 
+    end
+    
+    class DisparityStep < Step
+      
+      def initialize(layer_name, disparity)
+        super '(Other)', layer_name, {}, disparity
+        @extras = build_extras description
+      end
+      
+      private
+      
+      def description
+        {
+          'What is this?' => %(
+            <p>
+              <b>Other</b> is the amount of time spent executing
+              code that TuneUp doesn't wrap to extract more information.
+              To reduce overhead and make the listing more
+              manageable, we don't generate steps for every operation.
+            </p>
+            <p>#{layer_description}</p>
+          )
+        }
+      end
+      
+      def layer_description
+        case layer
+        when :model
+          "In the <i>model</i> layer, this is probably ORM overhead, out of your control."
+        when :view
+          "In the <i>view</i> layer, this is probably framework overhead during render, out of your control."
+        when :controller
+          %(
+            In the <i>controller</i> layer, this is probably framework overhead during action execution (out of your control),
+            or time spent executing your code in the action (calls to private methods, libraries, etc).
+          )
+        end
+      end
+      
     end
     
     class Bar
