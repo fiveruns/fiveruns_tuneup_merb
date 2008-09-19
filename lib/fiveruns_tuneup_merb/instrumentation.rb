@@ -68,8 +68,9 @@ module FiverunsTuneupMerb
              end
            end
 
-           def render(thing, *args)
-             Fiveruns::Tuneup.step("Render #{thing.inspect}", :view) { super }
+           def render(thing = nil, *args)
+             name = thing ? thing.inspect : nil 
+             Fiveruns::Tuneup.step("Render #{name}", :view) { super }
            end
 
            def partial(template, *args)

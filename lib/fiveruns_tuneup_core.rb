@@ -341,10 +341,6 @@ module Fiveruns
                 <%= child.to_html %>
               <% end %>
               <li style="clear: both;"/>
-              <li style="padding-top: 10px; font-style: italic; float: right; font-size: 0.8em; color: rgb(204, 204, 204);">
-                See our 
-                <a style="font-style: italic;" target="_blank" href="http://www.fiveruns.com/products">production monitoring products</a>.
-              </li>
             </ul>
           </div>
           </div></div></div>
