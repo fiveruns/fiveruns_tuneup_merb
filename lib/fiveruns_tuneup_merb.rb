@@ -2,11 +2,10 @@ if defined?(Merb::Plugins)
 
   $:.unshift File.dirname(__FILE__)
   
-  
   load_dependency 'merb-slices'
   Merb::Plugins.add_rakefiles "fiveruns_tuneup_merb/merbtasks", "fiveruns_tuneup_merb/slicetasks", "fiveruns_tuneup_merb/spectasks"
   
-  require File.dirname(__FILE__) / 'fiveruns_tuneup_core'
+  require 'fiveruns_tuneup_core'
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'instrumentation'
 
   # Register the Slice for the current host application
