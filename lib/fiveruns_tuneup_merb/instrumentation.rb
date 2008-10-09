@@ -61,7 +61,7 @@ module FiverunsTuneupMerb
          module Ext
 
            def body
-             if content_type == :html
+             if content_type == :html && request.tuneup_run
                Fiveruns::Tuneup.insert_panel(super, request.tuneup_run)
              else
                super
@@ -104,14 +104,16 @@ module FiverunsTuneupMerb
 
          module Ext
 
-           def dispatch_action(controller, action, *args, &block)
-             result = nil
+           def dispatch_action(klass, action, *args, &block)
+             controller = nil
              @tuneup_run = Fiveruns::Tuneup.record do
-               result = Fiveruns::Tuneup.step "Dispatching #{controller}##{action}", :controller do
+               controller = Fiveruns::Tuneup.step "Dispatching #{klass}##{action}", :controller do
                  super
                end
              end
-             result
+             # Unflag redirects from panel insertion
+             @tuneup_run = nil if controller && controller.headers['Location']
+             controller
            end
 
          end

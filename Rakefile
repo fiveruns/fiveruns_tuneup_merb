@@ -36,14 +36,14 @@ end
 
 desc "Install FiverunsTuneupMerb as a gem"
 task :install => [:package] do
-  sh %{#{sudo} gem install pkg/#{NAME}-#{GEM_VERSION} --no-update-sources}
+  sh %{gem install pkg/#{NAME}-#{GEM_VERSION} --no-update-sources}
 end
 
 namespace :jruby do
 
   desc "Run :package and install the resulting .gem with jruby"
   task :install => :package do
-    sh %{#{sudo} jruby -S gem install #{install_home} pkg/#{NAME}-#{GEM_VERSION}.gem --no-rdoc --no-ri}
+    sh %{jruby -S gem install #{install_home} pkg/#{NAME}-#{GEM_VERSION}.gem --no-rdoc --no-ri}
   end
   
 end
