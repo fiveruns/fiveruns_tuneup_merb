@@ -8,7 +8,6 @@ if defined?(Merb::Plugins)
   require 'fiveruns_tuneup_core'
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'instrumentation'
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'api_key'
-  require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'runs'
 
   # Register the Slice for the current host application
   Merb::Slices.register(__FILE__)
@@ -31,7 +30,6 @@ if defined?(Merb::Plugins)
   # All Slice code is expected to be namespaced inside a module
   module FiverunsTuneupMerb
     extend APIKey
-    extend Runs
     
     # Slice metadata
     self.description = "Provides a FiveRuns TuneUp panel (http://tuneup.fiveruns.com)"
@@ -97,7 +95,7 @@ if defined?(Merb::Plugins)
   # Use FiverunsTuneupMerb.push_path and FiverunsTuneupMerb.push_app_path
   # to set paths to fiveruns_tuneup_merb-level and app-level paths. Example:
   #
-  # FiverunsTuneupMerb.push_path(:application, FiverunsTuneupMerb.root)
+  FiverunsTuneupMerb.push_path(:application, FiverunsTuneupMerb.root)
   # FiverunsTuneupMerb.push_app_path(:application, Merb.root / 'slices' / 'fiveruns_tuneup_merb')
   # ...
   #

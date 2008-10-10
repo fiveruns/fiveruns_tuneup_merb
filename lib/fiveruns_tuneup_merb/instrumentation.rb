@@ -122,6 +122,9 @@ module FiverunsTuneupMerb
              elsif xml_http_request?
                ::Merb.logger.debug 'TuneUp: Ignoring XHR request.'
                @tuneup = nil
+             elsif controller.is_a?(FiverunsTuneupMerb::Application)
+               ::Merb.logger.debug 'TuneUp: Ignoring internal request.'
+               @tuneup = nil
              else
                ::Merb.logger.info 'TuneUp: Valid request.'
              end   
