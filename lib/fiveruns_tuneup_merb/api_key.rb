@@ -3,13 +3,9 @@ require 'yaml'
 module FiverunsTuneupMerb
     
   module APIKey
-   
-    def api_key
-      config[:api_key]
-    end
     
-    def check_api_key
-      if api_key
+    def log_share_status
+      if Fiveruns::Tuneup::Run.api_key?
         Merb.logger.debug "TuneUp is configured for sharing."
       else
         Merb.logger.warn "TuneUp is NOT configured for sharing."

@@ -41,6 +41,7 @@ if defined?(Merb::Plugins)
     # right after a slice's classes have been loaded internally.
     def self.loaded
       Fiveruns::Tuneup::Run.directory = config[:run_directory]
+      Fiveruns::Tuneup::Run.api_key  =  config[:api_key]
       Fiveruns::Tuneup.javascripts_path = FiverunsTuneupMerb.public_dir_for('javascripts')
       Fiveruns::Tuneup.stylesheets_path = FiverunsTuneupMerb.public_dir_for('stylesheets')
     end
@@ -54,10 +55,10 @@ if defined?(Merb::Plugins)
         if defined?(::DataMapper)
           ::DataMapper::Repository.extend(FiverunsTuneupMerb::Instrumentation::DataMapper::Repository)
         end
+        log_share_status
       else
         Merb.logger.info "Not instrumenting with TuneUp (adapter is '#{Merb::Config[:adapter]}')"
       end
-      check_api_key
     end
     
     # Activation hook - runs after AfterAppLoads BootLoader
