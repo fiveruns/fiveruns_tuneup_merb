@@ -21,6 +21,7 @@ if defined?(Merb::Plugins)
   # :layout - the layout to use; defaults to :fiveruns_tuneup_merb
   # :mirror - which path component types to use on copy operations; defaults to all
   Merb::Slices.config[:fiveruns_tuneup_merb][:layout] ||= nil
+  Merb::Slices.config[:fiveruns_tuneup_merb][:application_name] ||= File.basename(Merb.root)
   Merb::Slices.config[:fiveruns_tuneup_merb][:run_directory] ||= begin
     Merb.root / :tmp / :fiveruns_tuneup_merb / :runs
   end
@@ -42,6 +43,12 @@ if defined?(Merb::Plugins)
     def self.loaded
       Fiveruns::Tuneup::Run.directory = config[:run_directory]
       Fiveruns::Tuneup::Run.api_key  =  config[:api_key]
+      Fiveruns::Tuneup::Run.environment.update(
+        :application_name => config[:application_name],
+        :framework => 'merb',
+        :framework_version => Merb::VERSION.to_s,
+        :framework_env => Merb.env.to_s
+      )
       Fiveruns::Tuneup.javascripts_path = FiverunsTuneupMerb.public_dir_for('javascripts')
       Fiveruns::Tuneup.stylesheets_path = FiverunsTuneupMerb.public_dir_for('stylesheets')
     end
@@ -80,7 +87,7 @@ if defined?(Merb::Plugins)
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
       # example of a named route
-      # scope.match('/on.js').to(:controller => 'state', :action => 'on').name(:fiveruns_tuneup_merb_on)
+      scope.match('/share').to(:controller => 'runs', :action => 'share').name(:fiveruns_tuneup_merb_share_run)
     end
     
   end

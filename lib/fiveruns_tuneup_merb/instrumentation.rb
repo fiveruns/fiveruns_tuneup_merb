@@ -63,7 +63,9 @@ module FiverunsTuneupMerb
            def body
              if content_type == :html && request.tuneup
                ::Merb.logger.debug "TuneUp: Saving run and inserting panel into the response (#{request.tuneup.class})"
-               Fiveruns::Tuneup::Run.new(request.uri, request.tuneup).save
+               run = Fiveruns::Tuneup::Run.new(request.uri, request.tuneup)
+               ::Merb.logger.debug "TuneUp: Compressing #{run.to_json.size} bytes of JSON to persist"
+               run.save
                Fiveruns::Tuneup.insert_panel(super, request.tuneup)
              else
                super
