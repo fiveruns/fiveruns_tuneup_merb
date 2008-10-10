@@ -8,6 +8,7 @@ if defined?(Merb::Plugins)
   require 'fiveruns_tuneup_core'
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'instrumentation'
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'api_key'
+  require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'runs'
 
   # Register the Slice for the current host application
   Merb::Slices.register(__FILE__)
@@ -20,12 +21,16 @@ if defined?(Merb::Plugins)
   # :layout - the layout to use; defaults to :fiveruns_tuneup_merb
   # :mirror - which path component types to use on copy operations; defaults to all
   Merb::Slices.config[:fiveruns_tuneup_merb][:layout] ||= nil
+  Merb::Slices.config[:fiveruns_tuneup_merb][:run_directory] ||= begin
+    Merb.root / :tmp / :fiveruns_tuneup_merb / :runs
+  end
   
   Fiveruns::Tuneup::STRIP_ROOT = Merb.root
   
   # All Slice code is expected to be namespaced inside a module
   module FiverunsTuneupMerb
     extend APIKey
+    extend Runs
     
     # Slice metadata
     self.description = "Provides a FiveRuns TuneUp panel (http://tuneup.fiveruns.com)"
@@ -35,16 +40,13 @@ if defined?(Merb::Plugins)
     # Stub classes loaded hook - runs before LoadClasses BootLoader
     # right after a slice's classes have been loaded internally.
     def self.loaded
+      Fiveruns::Tuneup::Run.directory = config[:run_directory]
       Fiveruns::Tuneup.javascripts_path = FiverunsTuneupMerb.public_dir_for('javascripts')
       Fiveruns::Tuneup.stylesheets_path = FiverunsTuneupMerb.public_dir_for('stylesheets')
     end
         
     # Initialization hook - runs before AfterAppLoads BootLoader
     def self.init
-    end
-    
-    # Activation hook - runs after AfterAppLoads BootLoader
-    def self.activate
       if Merb::Config[:adapter] != 'irb'
         Merb.logger.info "Instrumenting with TuneUp"
         ::Merb::Request.extend(FiverunsTuneupMerb::Instrumentation::Merb::Request)
@@ -56,6 +58,10 @@ if defined?(Merb::Plugins)
         Merb.logger.info "Not instrumenting with TuneUp (adapter is '#{Merb::Config[:adapter]}')"
       end
       check_api_key
+    end
+    
+    # Activation hook - runs after AfterAppLoads BootLoader
+    def self.activate
     end
     
     # Deactivation hook - triggered by Merb::Slices.deactivate(FiverunsTuneupMerb)

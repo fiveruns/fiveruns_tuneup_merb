@@ -61,8 +61,10 @@ module FiverunsTuneupMerb
          module Ext
 
            def body
-             if content_type == :html && request.tuneup_run
-               Fiveruns::Tuneup.insert_panel(super, request.tuneup_run)
+             if content_type == :html && request.tuneup
+               ::Merb.logger.debug "TuneUp: Saving run and inserting panel into the response"
+               Fiveruns::Tuneup::Run.new(request.uri, request.tuneup).save
+               Fiveruns::Tuneup.insert_panel(super, request.tuneup)
              else
                super
              end
@@ -97,7 +99,7 @@ module FiverunsTuneupMerb
            request = super
            request.extend(Ext)
            class << request
-             attr_reader :tuneup_run
+             attr_reader :tuneup
            end
            request
          end
@@ -106,13 +108,21 @@ module FiverunsTuneupMerb
 
            def dispatch_action(klass, action, *args, &block)
              controller = nil
-             @tuneup_run = Fiveruns::Tuneup.record do
+             @tuneup = Fiveruns::Tuneup.record do
                controller = Fiveruns::Tuneup.step "Dispatching #{klass}##{action}", :controller do
                  super
                end
              end
-             # Unflag redirects from panel insertion
-             @tuneup_run = nil if controller && controller.headers['Location']
+             # Don't save redirects from panel insertion
+             if controller && controller.headers['Location']
+               ::Merb.logger.debug 'TuneUp: Ignoring redirect.'
+               @tuneup = nil
+             elsif xml_http_request?
+               ::Merb.logger.debug 'TuneUp: Ignoring XHR request.'
+               @tuneup = nil
+             else
+               ::Merb.logger.info 'TuneUp: Valid request.'
+             end   
              controller
            end
 
