@@ -1,15 +1,2 @@
-TODO:
-
-- Fix FiverunsTuneupMerb.description and FiverunsTuneupMerb.version
-- Fix LICENSE with your name
-- Fix Rakefile with your name and contact info
-- Add your code to lib/fiveruns_tuneup_merb.rb
-- Add your Merb rake tasks to lib/fiveruns_tuneup_merb/merbtasks.rb
-
-Remove anything that you don't need:
-
-- app/controllers/main.rb FiverunsTuneupMerb::Main controller
-- app/views/layout/fiveruns_tuneup_merb.html.erb
-- spec/controllers/main_spec.rb controller specs
-- public/* any public files
-- stubs/* any stub files
+* Feedback on ORMs
+* Compatibility testing with live Merb apps (1.0)

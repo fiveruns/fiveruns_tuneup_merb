@@ -4,6 +4,10 @@ module FiverunsTuneupMerb
     
   module APIKey
     
+    def can_share?
+      Fiveruns::Tuneup::Run.api_key? && routed?
+    end
+    
     def log_share_status
       if Fiveruns::Tuneup::Run.api_key?
         Merb.logger.debug "TuneUp is configured for sharing."

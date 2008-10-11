@@ -84,8 +84,10 @@ if defined?(Merb::Plugins)
     # @note prefix your named routes with :fiveruns_tuneup_merb_
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
-      # example of a named route
-      scope.match('/share').to(:controller => 'runs', :action => 'share').name(:fiveruns_tuneup_merb_share_run)
+      if Fiveruns::Tuneup::Run.api_key?
+        # example of a named route
+        scope.match(%r{/share/(.+)}).to(:controller => 'runs', :action => 'share', :slug => '[1]').name(:fiveruns_tuneup_merb_share_run)
+      end
     end
     
   end

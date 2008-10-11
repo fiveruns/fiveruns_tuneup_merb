@@ -10,7 +10,7 @@ AUTHOR = "FiveRuns Development Team"
 EMAIL = "dev@fiveruns.com"
 HOMEPAGE = "http://tuneup.fiveruns.com/"
 SUMMARY = "Merb Slice that provides the FiveRuns TuneUp Panel (http://tuneup.fiveruns.com)"
-GEM_VERSION = "0.0.1"
+GEM_VERSION = "0.5.0"
 
 spec = Gem::Specification.new do |s|
   s.rubyforge_project = 'fiveruns_tuneup_merb'

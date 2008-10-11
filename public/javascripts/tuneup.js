@@ -46,7 +46,28 @@ var TuneUp = {
 }
         
 $(window).ready(function() {
-  
+        
+  page.find('#tuneup-save-link').click(function () {
+    var link = $(this);
+    link.hide();
+    $.getJSON($(this).attr('href'), {}, function(data) {
+      if (data.run_id) {
+        var url = "http://tuneup.fiveruns.com/runs/" + data.run_id;
+        var goToRun = function() {
+          if(!_window.open(url)) { page.location = url; }
+          return false;
+        }
+        link.html("Shared!");
+        link.click(goToRun);
+        goToRun();
+      } else if (data.error) {
+        alert(data.error);
+      }
+      link.show();
+    });
+    return false;
+  });
+    
   page.find('#tuneup .with_children .tuneup-title a.tuneup-step-name').toggle(
     // Note: Simple 'parent' lookup with selector doesn't seem to work
     function() { TuneUp.parentStepOf($(this)).addClass('tuneup-opened'); },
@@ -72,19 +93,5 @@ $(window).ready(function() {
     ));
   });
     
-  page.find('#fiveruns_tuneup_state').toggle(
-    function () {
-      var link = $(this);
-      $.getScript('/fiveruns_tuneup_merb/off.js', function() {
-        link.html('Turn On');
-      });
-    },
-    function () {
-      var link = $(this);
-      $.getScript('/fiveruns_tuneup_merb/on.js', function() {
-        link.html('Turn Off');
-      });
-    }
-  );
   TuneUp.adjustFixedElements(page);
 });
