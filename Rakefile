@@ -1,16 +1,14 @@
 require 'rubygems'
 require 'rake/gempackagetask'
-require 'spec/rake/spectask'
 require 'merb-core/version'
 require 'merb-core/tasks/merb_rake_helper'
-require 'merb-core/test/tasks/spectasks'
 
 NAME = "fiveruns_tuneup_merb"
 AUTHOR = "FiveRuns Development Team"
 EMAIL = "dev@fiveruns.com"
 HOMEPAGE = "http://tuneup.fiveruns.com/"
 SUMMARY = "Merb Slice that provides the FiveRuns TuneUp Panel (http://tuneup.fiveruns.com)"
-GEM_VERSION = "0.5.0"
+GEM_VERSION = "0.5.1"
 
 spec = Gem::Specification.new do |s|
   s.rubyforge_project = 'fiveruns_tuneup_merb'
