@@ -8,7 +8,7 @@ var TuneUp = {
   },
   adjustFixedElements: function(e) {
     page.find('*').each(function() {
-      if($(this).css({position: 'fixed'})) {
+      if($(this).css("position") == "fixed") {
         TuneUp.adjustElement(e);
       }
   	});
