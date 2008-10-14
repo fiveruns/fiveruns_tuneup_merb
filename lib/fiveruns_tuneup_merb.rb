@@ -33,7 +33,7 @@ if defined?(Merb::Plugins)
     
     # Slice metadata
     self.description = "Provides a FiveRuns TuneUp panel (http://tuneup.fiveruns.com)"
-    self.version = "0.0.1"
+    self.version = "0.5.2"
     self.author = "FiveRuns Development Team <dev@fiveruns.com>"
     
     # Stub classes loaded hook - runs before LoadClasses BootLoader

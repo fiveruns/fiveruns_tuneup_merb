@@ -8,7 +8,7 @@ AUTHOR = "FiveRuns Development Team"
 EMAIL = "dev@fiveruns.com"
 HOMEPAGE = "http://tuneup.fiveruns.com/"
 SUMMARY = "Merb Slice that provides the FiveRuns TuneUp Panel (http://tuneup.fiveruns.com)"
-GEM_VERSION = "0.5.1"
+GEM_VERSION = "0.5.2"
 
 spec = Gem::Specification.new do |s|
   s.rubyforge_project = 'fiveruns_tuneup_merb'
@@ -16,7 +16,7 @@ spec = Gem::Specification.new do |s|
   s.version = GEM_VERSION
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README", "LICENSE", 'TODO']
+  s.extra_rdoc_files = ["README", "LICENSE", 'TODO', "CHANGELOG"]
   s.summary = SUMMARY
   s.description = s.summary
   s.author = AUTHOR
@@ -25,7 +25,7 @@ spec = Gem::Specification.new do |s|
   s.add_dependency('fiveruns_tuneup_core')
   s.add_dependency('merb-slices', '>= 0.9.5')
   s.require_path = 'lib'
-  s.files = %w(LICENSE README Rakefile TODO) + Dir.glob("{lib,spec,app,public,stubs}/**/*")
+  s.files = %w(LICENSE README Rakefile TODO CHANGELOG) + Dir.glob("{lib,spec,app,public,stubs}/**/*")
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
