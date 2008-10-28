@@ -3,9 +3,10 @@ if defined?(Merb::Plugins)
   $:.unshift File.dirname(__FILE__)
   
   load_dependency 'merb-slices'
-  Merb::Plugins.add_rakefiles "fiveruns_tuneup_merb/merbtasks", "fiveruns_tuneup_merb/slicetasks"
+  load_dependency 'fiveruns_tuneup_core'
   
-  require 'fiveruns_tuneup_core'
+  Merb::Plugins.add_rakefiles "fiveruns_tuneup_merb/merbtasks"
+  
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'instrumentation'
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'api_key'
 
@@ -33,7 +34,7 @@ if defined?(Merb::Plugins)
     
     # Slice metadata
     self.description = "Provides a FiveRuns TuneUp panel (http://tuneup.fiveruns.com)"
-    self.version = "0.5.2"
+    self.version = "0.5.3"
     self.author = "FiveRuns Development Team <dev@fiveruns.com>"
     
     # Stub classes loaded hook - runs before LoadClasses BootLoader

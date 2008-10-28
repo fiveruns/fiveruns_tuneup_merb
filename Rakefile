@@ -8,7 +8,10 @@ AUTHOR = "FiveRuns Development Team"
 EMAIL = "dev@fiveruns.com"
 HOMEPAGE = "http://tuneup.fiveruns.com/"
 SUMMARY = "Merb Slice that provides the FiveRuns TuneUp Panel (http://tuneup.fiveruns.com)"
-GEM_VERSION = "0.5.2"
+
+# IMPORTANT: Make sure you modify the version number in lib/fiveruns_tuneup_merb.rb
+#            as well!
+GEM_VERSION = "0.5.3"
 
 spec = Gem::Specification.new do |s|
   s.rubyforge_project = 'fiveruns_tuneup_merb'
@@ -22,7 +25,7 @@ spec = Gem::Specification.new do |s|
   s.author = AUTHOR
   s.email = EMAIL
   s.homepage = HOMEPAGE
-  s.add_dependency('fiveruns_tuneup_core')
+  s.add_dependency('fiveruns_tuneup_core', '>= 0.5.1')
   s.add_dependency('merb-slices', '>= 0.9.5')
   s.require_path = 'lib'
   s.files = %w(LICENSE README Rakefile TODO CHANGELOG) + Dir.glob("{lib,spec,app,public,stubs}/**/*")
