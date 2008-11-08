@@ -4,9 +4,7 @@ if defined?(Merb::Plugins)
   
   load_dependency 'merb-slices'
   load_dependency 'fiveruns_tuneup_core'
-  
-  Merb::Plugins.add_rakefiles "fiveruns_tuneup_merb/merbtasks"
-  
+    
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'instrumentation'
   require File.dirname(__FILE__) / 'fiveruns_tuneup_merb' / 'api_key'
 
@@ -55,15 +53,16 @@ if defined?(Merb::Plugins)
     # Initialization hook - runs before AfterAppLoads BootLoader
     def self.init
       if Merb::Config[:adapter] != 'irb'
-        Merb.logger.info "Instrumenting with TuneUp"
+        Merb.logger.info "Instrumenting with FiveRuns TuneUp"
         ::Merb::Request.extend(FiverunsTuneupMerb::Instrumentation::Merb::Request)
         ::Merb::Controller.extend(FiverunsTuneupMerb::Instrumentation::Merb::Controller)
         if defined?(::DataMapper)
           ::DataMapper::Repository.extend(FiverunsTuneupMerb::Instrumentation::DataMapper::Repository)
         end
         log_share_status
+        copy_assets!
       else
-        Merb.logger.info "Not instrumenting with TuneUp (adapter is '#{Merb::Config[:adapter]}')"
+        Merb.logger.info "Not instrumenting with FiveRuns TuneUp (adapter is '#{Merb::Config[:adapter]}')"
       end
     end
     
@@ -89,6 +88,12 @@ if defined?(Merb::Plugins)
         # example of a named route
         scope.match(%r{/share/(.+)}).to(:controller => 'runs', :action => 'share', :slug => '[1]').name(:fiveruns_tuneup_merb_share_run)
       end
+    end
+    
+    def self.copy_assets!
+      Merb.logger.info "Automatically copying assets for FiveRuns TuneUp"
+      copied, preserved = mirror_public!
+      preserved.each { |f| Merb.logger.warn "! preserved override as #{f}" }
     end
     
   end

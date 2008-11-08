@@ -22,11 +22,7 @@ See http://blog.fiveruns.com/2008/10/11/fiveruns-tuneup-for-merb for the announc
 
   dependency 'fiveruns_tuneup_merb'
 
-3. Run the following in your Merb.root:
-
-  rake slices:fiveruns_tuneup_merb:install
-
-4. Add the following to your config/router.rb:
+3. Add the following to your config/router.rb:
 
   slice FiverunsTuneupMerb
   
