@@ -24,7 +24,7 @@ See http://blog.fiveruns.com/2008/10/11/fiveruns-tuneup-for-merb for the announc
 
 3. Add the following to your config/router.rb:
 
-  slice FiverunsTuneupMerb
+  add_slice FiverunsTuneupMerb
   
 (If you're already mounting other slices with `all_slices' this step isn't necessary.)
 
